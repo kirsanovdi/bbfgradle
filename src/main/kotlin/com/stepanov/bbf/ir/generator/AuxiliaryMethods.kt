@@ -7,7 +7,7 @@ fun getEmptyContextWithMaster(masterContext: Context): Context = Context(MetaInf
 fun createWithLeadingSpaces(string: String): String = string.replace("\n", "\n    ")
 val defaultTypes = listOf("Int", "Double", "Float", "Long", "Byte", "Short", "Char", "Boolean")
 fun rnd(from: Int, to: Int): Int{
-    return Random.nextInt(to - from) + from
+    return if (from == to) from else Random.nextInt(to - from) + from
 }
 
 var i = 0

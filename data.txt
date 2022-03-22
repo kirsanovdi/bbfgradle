@@ -1,8 +1,11 @@
-minWidth 4 - минимальная ширина контекста (кол-ва элементов одного вида)
-maxWidth 5 - максимальная ширина контекста
+minWidth 2 - минимальная ширина контекста (кол-ва элементов одного вида)
+maxWidth 2 - максимальная ширина контекста
 genClass_pr 100 - процент генерации класса
 genClass_isGeneric 50 - процент генерации класса с generic types
 genClass_GenericMinCount 1 - минимальное количество generic types
 genClass_GenericMaxCount 4 - максимальное количество generic types
 genMethod_pr 100 - процент генерации метода
 genVariable_pr 100 - процент генерации переменной
+hookUpperType 50 - процент перехода при поиске классов на верхний уровень
+minRndTypeSetSize 2 - минимальное количество аргументов в методе
+maxRndTypeSetSize 2 - максимальное количество аргументов в методе

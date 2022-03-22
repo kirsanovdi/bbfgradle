@@ -32,7 +32,7 @@ class Context (private val data: MetaInfo,
     }
     private fun generateMethod(depth: Int){
         val returnType = getRandomType()
-        val method = GeneralMethod(generateName("mt", depth), this, getRandomTypeSet(), returnType)
+        val method = GeneralMethod(generateName("mt", depth), this, getRandomTypeSet(rnd(data["minRndTypeSetSize"], data["maxRndTypeSetSize"])), returnType)
         method.context.generateLayer(depth)
         methods.add(method)
         genMVC.add(method)
@@ -43,24 +43,32 @@ class Context (private val data: MetaInfo,
         variables.add(value)
         genMVC.add(value)
     }
-    private fun getRandomType(): String = rnd(0, 100).let { rnd ->
+
+    private fun getRandomLevelType(): String = rnd(0, 100).let { rnd ->
         when {
-            rnd in 0..29&& classes.isNotEmpty()  -> classes.let { it.toList()[rnd(0, it.size)] }.getName()
-            rnd in 30 .. 59 && masterContext != null && masterContext.classes.isNotEmpty() -> masterContext.classes.let { it.toList()[rnd(0, it.size)] }.getName()
-            rnd in 60 .. 89 && containTypes.isNotEmpty() -> containTypes.let { it.toList()[rnd(0, it.size)] }
-            else -> defaultTypes[rnd(0, 8)]
+            rnd in 0..49&& classes.isNotEmpty()  -> classes.let { it.toList()[rnd(0, it.size)] }.getName()
+            rnd in 50 .. 99 && containTypes.isNotEmpty() -> containTypes.let { it.toList()[rnd(0, it.size)] }
+            else -> defaultTypes[rnd(0,8)]
         }
     }
 
-    private fun getRandomTypeSet(): Set<String>{
+    private fun getRandomType(): String = when (rnd(0, 100)) {
+        in 0 .. 49 -> getRandomLevelType()
+        in 50 .. 99 -> hookUpperType(data["hookUpperType"])
+        else -> defaultTypes[rnd(0, 8)]
+    }
+
+
+    private fun getRandomTypeSet(count: Int): Set<String>{
         val mutableSet = mutableSetOf<String>()
-        for (i in 0..10){
-            if(rnd(0, 100) < 50){
-                mutableSet.add(getRandomType())
-            }
+        for (i in 0 until count){
+            mutableSet.add(getRandomType())
         }
         return mutableSet
     }
+
+    private fun hookUpperType(probability: Int): String =
+        if(masterContext != null && rnd(0, 100) < probability) hookUpperType(probability) else getRandomLevelType()
 
     override fun toString(): String = StringBuilder().let{ sb ->
         for(mvc in genMVC){
