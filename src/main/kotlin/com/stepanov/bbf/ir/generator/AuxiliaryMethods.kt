@@ -12,6 +12,6 @@ fun rnd(from: Int, to: Int): Int{
 
 var i = 0
 fun generateName(prefix: String, depth: Int): String{
-    return "$prefix${ (depth + 1) * 1000 + i++}"
+    return "${prefix}Rd${depth}Id${i++}"
 }
 abstract class GeneralVMC

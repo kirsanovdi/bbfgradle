@@ -1,12 +1,12 @@
 package com.stepanov.bbf.ir.generator
 
 class Context (private val data: MetaInfo,
-               private val classes: MutableSet<GeneralClass> = mutableSetOf(),
-               private val methods: MutableSet<GeneralMethod> = mutableSetOf(),
-               private val variables: MutableSet<GeneralVariable> = mutableSetOf(),
-               private val genMVC: MutableSet<GeneralVMC> = mutableSetOf(),
+               private val classes: MutableList<GeneralClass> = mutableListOf(),
+               private val methods: MutableList<GeneralMethod> = mutableListOf(),
+               private val variables: MutableList<GeneralVariable> = mutableListOf(),
+               private val genMVC: MutableList<GeneralVMC> = mutableListOf(),
                private val masterContext: Context? = null,
-               private val containTypes: MutableSet<String> = mutableSetOf()) {
+               private val containTypes: MutableList<String> = mutableListOf()) {
     fun generateLayer(depth: Int){
         if(depth > 0){
             for(i in 0..rnd(data["minWidth"], data["maxWidth"])){
@@ -17,7 +17,7 @@ class Context (private val data: MetaInfo,
         }
     }
     private fun generateClass(depth: Int){
-        val genericTypes = if(rnd(0, 100) < data["genClass_isGeneric"]) null else mutableSetOf<String>().let {
+        val genericTypes = if(rnd(0, 100) < data["genClass_isGeneric"]) null else mutableListOf<String>().let {
             for (i in 0 .. rnd(data["genClass_GenericMinCount"],data["genClass_GenericMaxCount"])){
                 val genName = generateName("gen", depth)
                 it.add(genName)
@@ -32,7 +32,7 @@ class Context (private val data: MetaInfo,
     }
     private fun generateMethod(depth: Int){
         val returnType = getRandomType()
-        val method = GeneralMethod(generateName("mt", depth), this, getRandomTypeSet(rnd(data["minRndTypeSetSize"], data["maxRndTypeSetSize"])), returnType)
+        val method = GeneralMethod(generateName("mt", depth), this, getRandomTypeList(rnd(data["minRndTypeListSize"], data["maxRndTypeListSize"])), returnType)
         method.context.generateLayer(depth)
         methods.add(method)
         genMVC.add(method)
@@ -46,8 +46,8 @@ class Context (private val data: MetaInfo,
 
     private fun getRandomLevelType(): String = rnd(0, 100).let { rnd ->
         when {
-            rnd in 0..49&& classes.isNotEmpty()  -> classes.let { it.toList()[rnd(0, it.size)] }.getName()
-            rnd in 50 .. 99 && containTypes.isNotEmpty() -> containTypes.let { it.toList()[rnd(0, it.size)] }
+            rnd in 0..49&& classes.isNotEmpty()  -> classes[rnd(0, classes.size)].getName()
+            rnd in 50 .. 99 && containTypes.isNotEmpty() -> containTypes[rnd(0, containTypes.size)]
             else -> defaultTypes[rnd(0,8)]
         }
     }
@@ -59,12 +59,12 @@ class Context (private val data: MetaInfo,
     }
 
 
-    private fun getRandomTypeSet(count: Int): Set<String>{
-        val mutableSet = mutableSetOf<String>()
+    private fun getRandomTypeList(count: Int): List<String>{
+        val mutableList = mutableListOf<String>()
         for (i in 0 until count){
-            mutableSet.add(getRandomType())
+            mutableList.add(getRandomType())
         }
-        return mutableSet
+        return mutableList
     }
 
     private fun hookUpperType(probability: Int): String =
