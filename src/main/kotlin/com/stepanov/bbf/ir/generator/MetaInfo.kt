@@ -9,5 +9,5 @@ class MetaInfo(val path: String) {
         Pair(param[0], param[1].toInt())
     }
 
-    operator fun get(name: String): Int = data[name]?:throw IllegalArgumentException()
+    operator fun get(name: String): Int = data[name] ?: throw IllegalArgumentException(name)
 }

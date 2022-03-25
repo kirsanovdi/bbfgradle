@@ -7,7 +7,7 @@ import kotlin.system.measureTimeMillis
 fun main() {
     val emptyContext = Context(MetaInfo("data.txt"))
     println(measureTimeMillis {
-        emptyContext.generateLayer(3)
+        emptyContext.generateClassLayer(2)
     })
     println("--------------------------------------")
     println(emptyContext.toString().replace("    }", "}"))
